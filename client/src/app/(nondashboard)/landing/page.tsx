@@ -4,38 +4,38 @@ import React from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
-import { useCarousel } from "@/hooks/useCarousel";
+import { useCarousel } from "@/hooks/useCarousel"; // Giả sử hook này vẫn hoạt động tốt
 import { Skeleton } from "@/components/ui/skeleton";
 import { useGetCoursesQuery } from "@/state/api";
-import Course from "@/components/courses/[courseId]/chapters/[chapterId]/page";
 import CourseCardSearch from "@/components/CourseCardSearch";
 import { useRouter } from "next/navigation";
-import { useUser } from "@clerk/nextjs";
 
+// --- LOADING SKELETON (Cập nhật để phản ánh layout mới) ---
 const LoadingSkeleton = () => {
   return (
-    <div className="landing-skeleton">
-      <div className="landing-skeleton__hero">
-        <div className="landing-skeleton__hero-content">
-          <Skeleton className="landing-skeleton__title" />
-          <Skeleton className="landing-skeleton__subtitle" />
-          <Skeleton className="landing-skeleton__subtitle-secondary" />
-          <Skeleton className="landing-skeleton__button" />
+    <div className="landing-skeleton-creative">
+      {/* Hero Skeleton */}
+      <div className="landing-skeleton-creative__hero">
+        <Skeleton className="landing-skeleton-creative__hero-bg" />
+        <div className="landing-skeleton-creative__hero-content">
+          <Skeleton className="landing-skeleton-creative__title" />
+          <Skeleton className="landing-skeleton-creative__subtitle" />
+          <Skeleton className="landing-skeleton-creative__button" />
         </div>
-        <Skeleton className="landing-skeleton__hero-image" />
       </div>
-      <div className="landing-skeleton__featured">
-        <Skeleton className="landing-skeleton__featured-title" />
-        <Skeleton className="landing-skeleton__featured-description" />
 
-        <div className="landing-skeleton__tags">
-          {[1, 2, 3, 4, 5].map((_, index) => (
-            <Skeleton key={index} className="landing-skeleton__tag" />
+      {/* Featured Courses Skeleton */}
+      <div className="landing-skeleton-creative__featured">
+        <Skeleton className="landing-skeleton-creative__featured-title" />
+        <Skeleton className="landing-skeleton-creative__featured-description" />
+        <div className="landing-skeleton-creative__tags">
+          {[1, 2, 3, 4].map((_, index) => (
+            <Skeleton key={index} className="landing-skeleton-creative__tag" />
           ))}
         </div>
-        <div className="landing-skeleton__courses">
-          {[1, 2, 3, 4].map((_, index) => (
-            <Skeleton key={index} className="landing-skeleton__course-card" />
+        <div className="landing-skeleton-creative__courses-carousel">
+          {[1, 2, 3].map((_, index) => (
+            <Skeleton key={index} className="landing-skeleton-creative__course-card" />
           ))}
         </div>
       </div>
@@ -43,108 +43,156 @@ const LoadingSkeleton = () => {
   );
 };
 
+// --- LANDING PAGE COMPONENT ---
 const Landing = () => {
-  // const {user} = useUser()
-  // console.log("user:", user)
-  const router = useRouter()
-  const currentImage = useCarousel({ totalImages: 3 });
+  const router = useRouter();
   const { data: courses, isLoading, isError } = useGetCoursesQuery({});
+  const heroImages = ["/hero1.jpg", "/hero2.jpg", "/hero3.jpg"]; // Đảm bảo bạn có các ảnh này trong public
+  const currentImageIndex = useCarousel({ totalImages: heroImages.length, interval: 5000 }); // Thêm interval cho tự động chuyển
 
-  const handleCourseClick = (courseId:string) => {
-    router.push(`/search?id = ${courseId}`, {
-      scroll: false,
-    })
+  const handleCourseClick = (courseId: string) => {
+    router.push(`/search?id=${courseId}`, { scroll: false });
   };
 
-  if (isLoading) return <LoadingSkeleton/>
+  if (isLoading) return <LoadingSkeleton />;
+  if (isError) return <p className="text-center text-red-500 py-10">Error loading courses. Please try again later.</p>;
+
+  // Animation variants
+  const fadeIn = {
+    initial: { opacity: 0 },
+    animate: { opacity: 1 },
+    transition: { duration: 0.8, ease: "easeInOut" },
+  };
+
+  const fadeInUp = {
+    initial: { opacity: 0, y: 30 },
+    animate: { opacity: 1, y: 0 },
+    transition: { duration: 0.7, ease: "easeOut" },
+  };
+
+  const staggerContainer = {
+    animate: {
+      transition: {
+        staggerChildren: 0.15,
+      },
+    },
+  };
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.5 }}
-      className="landing"
-    >
-      <motion.div
-        initial={{ y: 20, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.5 }}
-        className="landing__hero"
-      >
-        <div className="landing__hero-content">
-          <h1 className="landing__title">Course</h1>
-          <p className="landing__description">
-            This is the list of the course you can enroll in.
-            <br />
-            Course when you need them and want them.
-          </p>
-          <div className="landing__cta">
-            <Link href="/search" scroll = {false}>
-              <div className="landing__cta-button">Search for Course</div>
-            </Link>
-          </div>
-        </div>
-        <div className="landing__hero-images">
-          {["/hero1.jpg", "/hero2.jpg", "/hero3.jpg"].map((src, index) => (
-            <Image
+    <motion.div {...fadeIn} className="landing-creative">
+      {/* HERO SECTION - Full Screen, Centered Content */}
+      <motion.section className="landing-creative__hero">
+        <div className="landing-creative__hero-image-container">
+          {heroImages.map((src, index) => (
+            <motion.div
               key={src}
-              src={src}
-              alt={`Hero Banner ${index + 1}`}
-              fill
-              priority={index === currentImage}
-              sizes="(max-witdh:768px) 100w, (max-width:1200px) 50vw, 33vw"
-              className={`landing__hero-image ${
-                index === currentImage ? "landing__hero-image--active" : ""
-              }`}
-            />
+              initial={{ opacity: 0 }}
+              animate={{ opacity: index === currentImageIndex ? 1 : 0 }}
+              transition={{ opacity: { duration: 1.5, ease: "easeInOut" } }} // Cross-fade
+              className="landing-creative__hero-img-wrapper"
+            >
+              <Image
+                src={src}
+                alt={`Hero Image ${index + 1}`}
+                fill
+                priority={index === currentImageIndex}
+                sizes="100vw"
+                className="object-cover" // Đảm bảo ảnh cover toàn bộ
+              />
+            </motion.div>
           ))}
+          <div className="landing-creative__hero-overlay" /> {/* Lớp phủ tối màu để text dễ đọc hơn */}
         </div>
-      </motion.div>
-      <motion.div
-        initial={{ y: 20, opacity: 0 }}
-        whileInView={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.5 }}
-        viewport={{ amount: 0.3, once: true }}
-        className="landing__featured"
+
+        <motion.div
+          className="landing-creative__hero-content"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" }}
+        >
+          <motion.h1 {...fadeInUp} className="landing-creative__title">
+            KHÁM PHÁ TRI THỨC MỚI
+          </motion.h1>
+          <motion.p {...fadeInUp} transition={{ ...fadeInUp.transition, delay: 0.2 }} className="landing-creative__description">
+            Tìm kiếm và đăng ký các khóa học chất lượng hàng đầu,
+            <br />
+            phù hợp với lộ trình phát triển của bạn.
+          </motion.p>
+          <motion.div {...fadeInUp} transition={{ ...fadeInUp.transition, delay: 0.4 }}>
+            <Link href="/search" scroll={false}>
+              <motion.button
+                className="landing-creative__cta-button"
+                whileHover={{ scale: 1.05, boxShadow: "0px 5px 15px rgba(var(--primary-rgb, 52, 152, 219), 0.4)"}} // Thay var(--primary-rgb) bằng màu chính của bạn nếu có
+                whileTap={{ scale: 0.95 }}
+              >
+                Bắt đầu Tìm kiếm
+              </motion.button>
+            </Link>
+          </motion.div>
+        </motion.div>
+      </motion.section>
+
+      {/* FEATURED COURSES SECTION - Horizontal Scroll */}
+      <motion.section
+        className="landing-creative__featured"
+        initial="initial"
+        whileInView="animate"
+        viewport={{ once: true, amount: 0.1 }} // Trigger khi 10% section vào view
+        variants={staggerContainer}
       >
-        <h2 className="landing__featured-title">Featured Courses</h2>
-        <p className="landing_featured-description">
-          From beginner to advanced, in all industries, we have the right course
-          just for you and preparing your entire journey for learning and making
-          the most.
-        </p>
-        <div className="landing__tags">
+        <motion.h2 variants={fadeInUp} className="landing-creative__featured-title">
+          Khóa Học Nổi Bật
+        </motion.h2>
+        <motion.p variants={fadeInUp} className="landing-creative__featured-description">
+          Những khóa học được đánh giá cao và lựa chọn nhiều nhất.
+          <br />
+          Đầu tư vào bản thân ngay hôm nay!
+        </motion.p>
+        <motion.div variants={fadeInUp} className="landing-creative__tags">
           {[
-            "web development",
-            "enterprise IT",
-            "react nexjs",
-            "web development",
-            "javascript",
-            "backend development",
+            "Web Development",
+            "Data Science",
+            "UX/UI Design",
+            "Marketing",
+            "AI & Machine Learning",
           ].map((tag, index) => (
-            <span key={index} className="landing__tag">
+            <motion.span
+              key={index}
+              className="landing-creative__tag"
+              whileHover={{ y: -3, backgroundColor: "rgba(var(--primary-rgb, 52, 152, 219), 0.1)" }} // Nhẹ nhàng hơn
+            >
               {tag}
-            </span>
+            </motion.span>
           ))}
-        </div>
-        <div className="landing__courses">
-          {/* COURSE DISPLAY GOES HERE */}
-          {courses &&
-            courses
-              .slice(0, 4)
-              .map((course, index) => (
-                <motion.div
-                key = {course.courseId}
-                  initial={{ y: 50, opacity: 0 }}
-                  whileInView={{ y: 0, opacity: 1 }}
-                  transition={{ duration: 0.5, delay: index * 0.2 }}
-                  viewport={{ amount: 0.4 }}         
-                >
-                  <CourseCardSearch course={course} onClick={() => handleCourseClick(course.courseId)}/>
-                </motion.div>
-              ))}
-        </div>
-      </motion.div>
+        </motion.div>
+
+        <motion.div variants={fadeIn} className="landing-creative__courses-carousel-wrapper">
+          <div className="landing-creative__courses-carousel">
+            {courses && courses.length > 0 ? (
+              courses
+                .slice(0, 6) // Hiển thị nhiều hơn cho carousel
+                .map((course, index) => (
+                  <motion.div
+                    key={course.courseId}
+                    className="landing-creative__course-card-item"
+                    // variants={fadeInUp} // Có thể dùng variants của parent container
+                    initial={{ opacity: 0, x: 50 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.5, delay: index * 0.1, ease: "easeOut" }}
+                    viewport={{ once: true, amount: 0.3 }} // amount cho từng card
+                  >
+                    <CourseCardSearch // Giả sử CourseCardSearch đã được style phù hợp
+                      course={course}
+                      onClick={() => handleCourseClick(course.courseId)}
+                    />
+                  </motion.div>
+                ))
+            ) : (
+              <p className="col-span-full text-center">Hiện chưa có khóa học nổi bật nào.</p>
+            )}
+          </div>
+        </motion.div>
+      </motion.section>
     </motion.div>
   );
 };

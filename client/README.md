@@ -45,3 +45,7 @@ aws dynamodb list-tables --endpoint-url http://localhost:8000
 
 
 9.04
+
+git add .
+git commit -m "change img"
+git push origin main

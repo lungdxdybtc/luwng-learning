@@ -36,6 +36,9 @@ declare global {
   }
 
   interface Course {
+    thumbnail: string;
+    instructor: any;
+    tags: any;
     courseId: string;
     teacherId: string;
     teacherName: string;
