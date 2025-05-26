@@ -4,7 +4,7 @@ import React from "react";
 const Footer = () => {
   return (
     <div className="footer">
-      <p>&copy; 2023 Course. All rights reserved.</p>
+      <p>&copy; All rights reserved.</p>
       <div className="footer__links">
         {["About", "Privacy Policy", "Licensing", "Contact"].map((item) => (
           <Link
