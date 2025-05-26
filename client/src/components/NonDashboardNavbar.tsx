@@ -1,162 +1,93 @@
 "use client";
 
 import { SignedIn, SignedOut, UserButton, useUser } from "@clerk/nextjs";
-import { dark } from "@clerk/themes";
-import { Bell, Search, BookOpen, LogIn, UserPlus } from "lucide-react"; // Thêm icons
+// import { light } from "@clerk/themes"; // Sử dụng theme light cho UserButton trên nền trắng
+import { Bell, BookOpen } from "lucide-react";
 import Link from "next/link";
-import React, { useState } from "react";
-import { motion } from "framer-motion";
+import React from "react";
 
 const NonDashboardNavbar = () => {
   const { user } = useUser();
   const userRole = user?.publicMetadata?.userType as "student" | "teacher";
-  const [isSearchFocused, setIsSearchFocused] = useState(false); // Để quản lý focus của search input (nếu cần)
-
-  // Animation variants
-  const navItemHover = {
-    color: "var(--neon-blue)", // Màu neon khi hover
-    scale: 1.05,
-    transition: { duration: 0.2 },
-  };
+  // console.log("userRole:", userRole);
+  // console.log(user);
 
   return (
-    <motion.nav
-      className="tech-navbar"
-      initial={{ y: -100, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.5, ease: "easeOut" }}
-    >
-      <div className="tech-navbar__container">
-        {/* Left Side: Brand and Main Navigation */}
-        <div className="tech-navbar__left">
-          <Link
-            href="/"
-            className="tech-navbar__brand tech-navbar__brand-glitchy"
-            scroll={false}
-          >
-            <span data-text="NHOM 4 ">NHOM 19</span>
-            <span className="tech-navbar__brand-highlight ml-4" data-text="CONCUU">
-              DO AN CUOI KI
-            </span>
-          </Link>
-          {/* Có thể thêm các link điều hướng chính ở đây nếu cần */}
-          {/* Ví dụ:
-          <Link href="/courses" className="tech-navbar__link">
-            <motion.span variants={navItemHover} whileHover="hover">Khóa Học</motion.span>
-          </Link>
-          */}
-        </div>
-
-        {/* Center/Right Side: Search and Actions */}
-        <div className="tech-navbar__right">
-          {/* Search Input - Thiết kế tối giản */}
-          <div
-            className={`tech-navbar__search-wrapper ${isSearchFocused ? "tech-navbar__search-wrapper--focused" : ""}`}
-          >
-            <Search
-              className="tech-navbar__search-icon-prefix"
-              size={18}
-              onClick={() =>
-                document.getElementById("navbar-search-link")?.focus()
-              } // Focus vào Link/Input khi click icon
-            />
-            <Link
-              id="navbar-search-link"
-              href="/search"
-              className="tech-navbar__search-input-link"
-              scroll={false}
-              onFocus={() => setIsSearchFocused(true)}
-              onBlur={() => setIsSearchFocused(false)}
-            >
-              <span className="hidden sm:inline">Tìm kiếm khóa học...</span>
-              <span className="sm:hidden">Tìm kiếm...</span>
+    <nav className="bg-white shadow-sm sticky top-0 z-50"> {/* Nền trắng, shadow, sticky */}
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8"> {/* Container chuẩn, padding ngang */}
+        <div className="flex items-center justify-between h-16 md:h-20"> {/* flex, căn giữa, chiều cao */}
+          
+          {/* Phần bên trái: Logo */}
+          <div className="flex items-center">
+            <Link href="/" className="text-xl sm:text-2xl font-bold text-orange-600 hover:text-orange-700 transition-colors duration-300" scroll={false}>
+               NHOM 19 DO AN CUOI
             </Link>
-            {/* <BookOpen className="tech-navbar__search-icon-suffix" size={18} /> */}
           </div>
 
-          {/* Actions: Notifications, User */}
-          <div className="tech-navbar__actions">
-            <motion.button
-              className="tech-navbar__icon-button tech-navbar__notification-button"
-              whileHover={{ scale: 1.1, color: "var(--neon-blue)" }}
-              whileTap={{ scale: 0.9 }}
-              aria-label="Notifications"
+          {/* Phần bên phải: Search, Notification, Auth */}
+          <div className="flex items-center space-x-2 sm:space-x-4">
+            {/* Search Link/Button - Style giống nút cam trong mẫu */}
+            <Link
+              href="/search"
+              className="flex items-center bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 px-3 sm:px-4 rounded-lg shadow hover:shadow-md transition-all duration-300 transform hover:scale-105 text-sm"
+              scroll={false}
             >
-              <span className="tech-navbar__notification-indicator"></span>
-              <Bell size={20} />
-            </motion.button>
+              <BookOpen
+                className="h-4 w-4 sm:h-5 sm:w-5 mr-1 sm:mr-2" // Icon nhỏ hơn, màu trắng (do text-white)
+              />
+              <span className="hidden sm:inline">Search Courses</span>
+              <span className="sm:hidden">Search</span> {/* Hiển thị "Search" trên mobile */}
+            </Link>
 
+            {/* Notification Button */}
+            <button 
+              title="Notifications"
+              className="relative p-2 rounded-full text-stone-500 hover:text-orange-500 hover:bg-orange-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-white focus:ring-orange-500 transition-colors duration-200"
+            >
+              <span className="absolute top-1.5 right-1.5 block h-2.5 w-2.5 transform -translate-y-1/2 translate-x-1/2 rounded-full bg-orange-500 ring-2 ring-white">
+                <span className="sr-only">New notifications</span>
+              </span>
+              <Bell className="h-5 w-5 sm:h-6 sm:w-6" />
+            </button>
+
+            {/* Auth Section */}
             <SignedIn>
-              <div className="tech-navbar__user-button-wrapper">
-                <UserButton
-                  appearance={{
-                    baseTheme: dark, // Clerk dark theme
-                    variables: {
-                      colorPrimary: "var(--neon-blue)", // Màu chính cho các element trong Clerk UI
-                      colorBackground: "var(--dark-bg-secondary)",
-                      colorText: "var(--text-light)",
-                      colorInputBackground: "var(--card-bg)",
-                      colorInputText: "var(--text-light)",
-                    },
-                    elements: {
-                      userButtonAvatarBox: {
-                        width: "2.2rem", // Kích thước avatar
-                        height: "2.2rem",
-                        border: "2px solid var(--accent-border)", // Viền avatar
-                        boxShadow: "0 0 10px rgba(var(--neon-blue-rgb), 0.3)",
-                      },
-                      userButtonOuterIdentifier:
-                        "hidden sm:inline-block text-sm font-normal text-gray-300 hover:text-neon-blue transition-colors", // Tên người dùng
-                      userButtonBox: "flex flex-row-reverse items-center gap-3", // Căn chỉnh lại avatar và tên
-                      userButtonPopoverCard:
-                        "bg-dark-bg-secondary border border-accent-border shadow-xl",
-                      userButtonPopoverActionButton: "hover:bg-card-bg",
-                      userButtonPopoverActionButtonText: "text-text-light",
-                      userButtonPopoverFooter: "hidden", // Ẩn footer nếu không cần
-                    },
-                  }}
-                  // showName={true} // Clerk tự động ẩn tên trên mobile
-                  userProfileMode="navigation"
-                  userProfileUrl={
-                    userRole === "teacher"
-                      ? "/teacher/profile"
-                      : "/user/profile"
-                  }
-                />
-              </div>
+              <UserButton
+                appearance={{
+                  elements: {
+                    userButtonAvatarBox: "w-8 h-8 sm:w-9 sm:w-9",
+                    userButtonOuterIdentifier: "text-sm font-medium text-stone-700 hover:text-orange-600 hidden sm:block", // Màu chữ cho tên
+                    avatarBox: "border-2 border-transparent group-hover:border-orange-300", // Thêm hiệu ứng border khi hover
+                  },
+                }}
+                showName={true}
+                userProfileMode="navigation"
+                userProfileUrl={
+                  userRole === "teacher" ? "/teacher/profile" : "/user/profile"
+                }
+              />
             </SignedIn>
-
             <SignedOut>
               <Link
                 href="/signin"
-                className="tech-navbar__auth-link"
+                className="px-3 py-1.5 sm:px-4 sm:py-2 text-sm sm:text-base font-medium text-stone-600 hover:text-orange-600 hover:bg-orange-50 rounded-md transition-colors duration-200"
                 scroll={false}
               >
-                <motion.span
-                  className="flex items-center gap-1.5"
-                  whileHover={navItemHover}
-                >
-                  <LogIn size={18} /> Đăng nhập
-                </motion.span>
+                Log in
               </Link>
+              {/* Nút Sign up làm nổi bật giống nút Search */}
               <Link
                 href="/signup"
-                className="tech-navbar__auth-button tech-navbar__auth-button--signup"
+                className="bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 px-3 sm:px-4 rounded-lg shadow hover:shadow-md transition-all duration-300 transform hover:scale-105 text-sm"
                 scroll={false}
               >
-                <motion.span
-                  className="flex items-center gap-1.5"
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <UserPlus size={18} /> Đăng ký
-                </motion.span>
+                Sign up
               </Link>
             </SignedOut>
           </div>
         </div>
       </div>
-    </motion.nav>
+    </nav>
   );
 };
 

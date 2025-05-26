@@ -4,12 +4,12 @@ import Footer from "@/components/Footer";
 
 export default function Home() {
   return (
-    <div className="nondashboard-layout">
+    <div>
       <NonDashboardNavbar />
-      <main className="nondashboard-layout__main">
+      <main>
         <Landing />
       </main>
-      <Footer />
+      {/* <Footer /> */}
     </div>
   );
 }
