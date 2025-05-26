@@ -43,4 +43,5 @@ aws dynamodb list-tables --endpoint-url http://localhost:8000
 
 7.18
 
-8.10
+
+9.04
