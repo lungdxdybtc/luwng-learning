@@ -34,8 +34,10 @@ const NonDashboardNavbar = () => {
             className="tech-navbar__brand tech-navbar__brand-glitchy"
             scroll={false}
           >
-            <span data-text="NHOM 4 ">NHOM 19 </span>
-
+            <span data-text="NHOM 4 ">NHOM 19</span>
+            <span className="tech-navbar__brand-highlight ml-4" data-text="CONCUU">
+              DO AN CUOI KI
+            </span>
           </Link>
           {/* Có thể thêm các link điều hướng chính ở đây nếu cần */}
           {/* Ví dụ:
