@@ -1,18 +1,14 @@
 import NonDashboardNavbar from "@/components/NonDashboardNavbar";
 
-import Footer from "@/components/Footer";
 
 
 export default function Layout({children} : {children: React.ReactNode}) {
   return (
-    <div className="nondashboard-layout">
-      {/* Create nav bar start*/}
+    <div>
       <NonDashboardNavbar />
-      {/* Create nav bar end */}
-      <main className="nondashboard-layout__main">
+      <main>
         {children}
       </main>
-      <Footer/> 
     </div>
   );
 }
