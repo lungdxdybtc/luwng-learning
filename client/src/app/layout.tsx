@@ -13,7 +13,7 @@ const dmSans = DM_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "Learning Management System",
+  title: "Do An Cuoi Ki",
   description: "NHOM 19",
 };
 
