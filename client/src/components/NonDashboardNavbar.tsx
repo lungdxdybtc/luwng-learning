@@ -52,7 +52,7 @@ const NonDashboardNavbar = () => {
               ${scrolled ? 'text-orange-500 dark:text-orange-400' : 'text-orange-500 dark:text-orange-400'}
               hover:text-orange-600 dark:hover:text-orange-300`}
           >
-            NHÓM 19 {/* Có thể thay bằng logo image nếu có */}
+            Learning Management Systems {/* Có thể thay bằng logo image nếu có */}
           </Link>
 
           {/* Desktop Menu */}
