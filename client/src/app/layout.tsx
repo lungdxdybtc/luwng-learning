@@ -13,8 +13,8 @@ const dmSans = DM_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "Do An Cuoi Ki",
-  description: "NHOM 19",
+  title: "Learning Management Systems",
+  description: "Thanh | Tran",
 };
 
 export default function RootLayout({
